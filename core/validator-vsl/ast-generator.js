@@ -1,4 +1,5 @@
-function generateASTFirstPhase(tree, nodeIndices, nodes, isChild) {
+/* eslint-disable camelcase, no-param-reassign */
+function generateASTFirstPhase(tree, nodeIndices, nodes) {
   nodeIndices.forEach((nodeIndex) => {
     const node = nodes[nodeIndex];
     const nodeAttributes = node.attributes || {};
@@ -33,7 +34,7 @@ function generateASTFirstPhase(tree, nodeIndices, nodes, isChild) {
         children: {},
       };
       if (node.children) {
-        generateASTFirstPhase(tree[name].children, node.children, nodes, true);
+        generateASTFirstPhase(tree[name].children, node.children, nodes);
       }
     }
   });
@@ -44,7 +45,7 @@ function extractASTPath(path, AST) {
   let pathFound = true;
   let extractedASTPathValue = AST;
   const ptl = pathTokens.length;
-  for (var x = 0; x < ptl; x++) {
+  for (let x = 0; x < ptl; x++) {
     const astkey = pathTokens[x];
     if (!AST[astkey]) {
       pathFound = false;
@@ -59,7 +60,7 @@ function extractASTPath(path, AST) {
 
 function processSpreads(spreads, node, AST) {
   spreads.forEach((spreadPath) => {
-    //console.log(node, spreadPath, AST, 'CHECKING');
+    // console.log(node, spreadPath, AST, 'CHECKING');
     // console.log(AST);
     const extractedPathValue = extractASTPath(spreadPath, AST);
     // console.log('ExtractedValue', extractedPathValue);
@@ -78,8 +79,8 @@ function fillInSpreadVals(AST, trueAST) {
     }
   });
 }
-function generateAST(tree, nodeIndices, nodes, isChild) {
-  const ASTInit = generateASTFirstPhase(tree, nodeIndices, nodes, isChild);
+function generateAST(tree, nodeIndices, nodes) {
+  const ASTInit = generateASTFirstPhase(tree, nodeIndices, nodes);
   // We need to loop through and attend to things like spread operands before returning final object
   // console.log(ASTInit, '== == == ==');
   fillInSpreadVals(ASTInit, ASTInit);
