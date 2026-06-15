@@ -279,7 +279,9 @@ function Server(serverConfig = {}) {
       // Global 404 Catcher
       res.status(404).json({
         status: 'error',
-        message: 'Route not found',
+        message:
+          'The requested endpoint does not exist on this server. Please check the documentation for valid routes.',
+        code: 'ROUTE_NOT_FOUND',
       });
     });
     // eslint-disable-next-line no-unused-vars
