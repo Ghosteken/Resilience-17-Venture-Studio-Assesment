@@ -151,6 +151,7 @@ if (!user) {
 ```
 
 **Available Error Codes**:
+
 - `AUTHERR` - Authentication error
 - `NOAUTHERR` - No authentication provided
 - `INVLDAUTHTOKEN` - Invalid auth token
@@ -195,6 +196,7 @@ function myService(serviceData) {
 ```
 
 **Field Syntax**:
+
 - `field type` - Required field
 - `field? type` - Optional field
 - `field[] type` - Required array
@@ -315,10 +317,7 @@ async function createIdentity(serviceData, options = {}) {
     });
 
     if (existingUser) {
-      throwAppError(
-        IdentityManagementMessages.EMAIL_ALREADY_EXISTS,
-        ERROR_CODE.DUPLRCRD
-      );
+      throwAppError(IdentityManagementMessages.EMAIL_ALREADY_EXISTS, ERROR_CODE.DUPLRCRD);
     }
 
     // Hash password
@@ -347,6 +346,7 @@ module.exports = createIdentity;
 ### Transaction Pattern
 
 **When to Use Transactions**:
+
 - Multi-table operations (user + profile + auth)
 - Financial operations (payment + ledger + balance)
 - Any operation where partial failure creates invalid state
@@ -411,6 +411,7 @@ async function serviceWithTransaction(serviceData, options = {}) {
 ```
 
 **Transaction Exceptions** (DO NOT use transactions):
+
 - Authentication services (logs must persist on failure)
 - Audit logging
 - Rate limiting
@@ -461,11 +462,13 @@ module.exports = { Identity };
 **CRITICAL**: Only database-level constraints go in models:
 
 ✅ **Allowed in Models**:
+
 - `unique: true` (from spec's `<isUnique>`)
 - `index: true` (from spec's `<indexed>`)
 - `default: value`
 
 ❌ **NOT Allowed in Models**:
+
 - `required: true` (validate in service)
 - `enum: []` (validate in service)
 - `minLength`, `maxLength` (validate in service)
@@ -575,6 +578,7 @@ const stats = await IdentityModel.aggregate([...]);
 ```
 
 **Session Handling in Repositories**:
+
 - `create(data, options)` - Session as second parameter: `{ session }`
 - `createMany({ entries, options })` - Session in options: `options: { session }`
 - `updateOne({ query, updateValues, options })` - Session in options
@@ -627,6 +631,7 @@ module.exports = createHandler({
 ```
 
 **Request Context (`rc`) Properties**:
+
 - `rc.body` - Request body (POST/PUT/PATCH)
 - `rc.query` - Query parameters (GET)
 - `rc.params` - Path parameters (:id)
@@ -918,7 +923,7 @@ async function createProfile(serviceData, options = {}) {
 
   try {
     const profile = await Profile.create(data);
-    
+
     // Service handles related operations
     if (data.contacts) {
       await createContacts({ profile_id: profile._id, contacts: data.contacts });
@@ -1060,22 +1065,26 @@ const { createHandler } = require('@app-core/server');
 ### Installation & Setup
 
 1. **Clone the repository**:
+
    ```bash
    git clone <repository-url>
    cd <project-directory>
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**:
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Edit `.env` and configure required variables:
+
    ```bash
    # Server Configuration
    PORT=3000
@@ -1100,10 +1109,11 @@ const { createHandler } = require('@app-core/server');
    ```
 
 4. **Start the development server**:
+
    ```bash
    node bootstrap.js
    ```
-   
+
    The server will start on the port specified in your `.env` file (default: 3000).
 
 ### Development Commands
@@ -1122,12 +1132,14 @@ npm run sync-envs
 ### Verify Installation
 
 Once the server is running, you should see:
+
 ```
 Server listening on port 3000
 MongoDB connected successfully
 ```
 
 Test the server by accessing the application:
+
 ```bash
 curl http://localhost:3000
 ```

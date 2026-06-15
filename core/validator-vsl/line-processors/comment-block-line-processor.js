@@ -1,4 +1,4 @@
-function commentBlockLineProcessor(line) {
+function commentBlockLineProcessor() {
   return {
     lineMatched: true,
     isCommentNode: true,

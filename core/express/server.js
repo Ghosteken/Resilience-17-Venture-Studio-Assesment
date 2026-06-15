@@ -275,14 +275,15 @@ function Server(serverConfig = {}) {
   }
 
   function startServer() {
-    app.use((_, res, __) => {
+    app.use((_req, res) => {
       // Global 404 Catcher
       res.status(404).json({
         status: 'error',
-        message: 'Resource not found.',
+        message: 'Route not found',
       });
     });
-    app.use((err, _, res, __) => {
+    // eslint-disable-next-line no-unused-vars
+    app.use((err, _req, res, _next) => {
       appLogger.errorX(err, 'global-500-error');
       // Global 500 Catcher
       res.status(500).json({

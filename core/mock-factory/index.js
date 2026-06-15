@@ -28,7 +28,7 @@ const rawMockFactory = require('./raw-factory');
  * @returns {MockModel}
  */
 function createMockingFactory(dataKeys, mockDataStubs = {}, overrideMethods = {}) {
-  const { create, createMany, findOne, findMany, updateOne, updateMany, deleteOne, raw } =
+  const { create, createMany, findOne, findMany, updateOne, updateMany, deleteOne } =
     overrideMethods;
 
   const MockModel = function (dd) {

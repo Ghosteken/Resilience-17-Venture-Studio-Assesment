@@ -27,12 +27,14 @@ Request → Endpoint → Middleware (optional) → Service → Repository → Da
 ```
 
 **Key Principles:**
+
 - **Endpoints** handle HTTP routing and orchestrate service calls
 - **Services** contain business logic and validation
 - **Repositories** handle database operations (not needed for assessment)
 - **Middleware** handles cross-cutting concerns (auth, logging, etc.)
 
 **Path Aliases:**
+
 - `@app-core/*` - Core utilities (logger, validator, errors, etc.)
 - `@app/services/*` - Business logic services
 - `@app/messages/*` - Error message definitions
@@ -119,6 +121,7 @@ module.exports = parseInstruction;
 The validator uses a custom DSL (Domain Specific Language) called VSL.
 
 **Basic Syntax:**
+
 ```javascript
 const spec = `root { // Description (optional)
   fieldName type
@@ -133,6 +136,7 @@ const spec = `root { // Description (optional)
 **Important:** Always include a **space** between `root` and `{`
 
 **Available Types:**
+
 - `string` - Text values
 - `number` - Numeric values (integers or decimals)
 - `boolean` - true/false values
@@ -140,6 +144,7 @@ const spec = `root { // Description (optional)
 - `any` - Any type
 
 **Field Modifiers:**
+
 - `field type` - Required field
 - `field? type` - Optional field
 - `field[] type` - Required array
@@ -215,6 +220,7 @@ const spec3 = `root {
 ### Service Constraints (CRITICAL)
 
 **1. Two Parameters Only:**
+
 ```javascript
 async function myService(serviceData, options = {}) {
   // serviceData: all input data as a single object
@@ -223,23 +229,26 @@ async function myService(serviceData, options = {}) {
 ```
 
 **2. Input Validation First:**
+
 ```javascript
 const data = validator.validate(serviceData, parsedSpec);
 // Validation must be the FIRST step
 ```
 
 **3. Single Exit Point:**
+
 ```javascript
 async function myService(serviceData, options = {}) {
   let response; // Declare at top
-  
+
   // ... logic ...
-  
+
   return response; // Only ONE return statement
 }
 ```
 
 **4. Error Handling:**
+
 ```javascript
 // Always use throwAppError with message files
 if (invalidCondition) {
@@ -274,6 +283,7 @@ module.exports = PaymentMessages;
 ```
 
 **Register your message file** in `messages/index.js`:
+
 ```javascript
 module.exports = {
   // ... existing messages
@@ -348,23 +358,24 @@ Available via `helpers.http_statuses`:
 
 ```javascript
 // Success codes
-HTTP_200_OK                    // General success
-HTTP_201_CREATED              // Resource created
-HTTP_204_NO_CONTENT           // Success with no content
+HTTP_200_OK; // General success
+HTTP_201_CREATED; // Resource created
+HTTP_204_NO_CONTENT; // Success with no content
 
 // Client error codes
-HTTP_400_BAD_REQUEST          // Validation errors
-HTTP_401_UNAUTHORIZED         // Authentication required
-HTTP_403_FORBIDDEN            // Permission denied
-HTTP_404_NOT_FOUND           // Resource not found
-HTTP_409_CONFLICT            // Duplicate resource
+HTTP_400_BAD_REQUEST; // Validation errors
+HTTP_401_UNAUTHORIZED; // Authentication required
+HTTP_403_FORBIDDEN; // Permission denied
+HTTP_404_NOT_FOUND; // Resource not found
+HTTP_409_CONFLICT; // Duplicate resource
 
 // Server error codes
-HTTP_500_INTERNAL_SERVER_ERROR // General server error
-HTTP_503_SERVICE_UNAVAILABLE   // Service down
+HTTP_500_INTERNAL_SERVER_ERROR; // General server error
+HTTP_503_SERVICE_UNAVAILABLE; // Service down
 ```
 
 **Usage Example:**
+
 ```javascript
 // Success
 return {
@@ -380,6 +391,7 @@ throwAppError(Messages.INVALID_INPUT, ERROR_CODE.VALIDATIONERR);
 ### Registering Your Endpoint
 
 **Step 1:** Create your endpoint folder structure
+
 ```
 endpoints/
   payment-instructions/
@@ -387,6 +399,7 @@ endpoints/
 ```
 
 **Step 2:** Add to `app.js`
+
 ```javascript
 const ENDPOINT_CONFIGS = [
   // ... existing configs
@@ -405,6 +418,7 @@ Middleware runs before your endpoint handler. Use it for cross-cutting concerns 
 ### When to Use Middleware
 
 **Use middleware for:**
+
 - Authentication/authorization
 - Request logging
 - Rate limiting
@@ -412,6 +426,7 @@ Middleware runs before your endpoint handler. Use it for cross-cutting concerns 
 - Input sanitization
 
 **Don't use middleware for:**
+
 - Business logic (belongs in services)
 - Data transformations (belongs in services)
 - Database operations (belongs in repositories)
@@ -468,14 +483,14 @@ const logRequest = require('@app/middlewares/log-request');
 module.exports = createHandler({
   path: '/payment-instructions',
   method: 'post',
-  
+
   // Add middleware here
   middlewares: [logRequest],
-  
+
   async handler(rc, helpers) {
     // Access data from middleware via rc.meta
     console.log('Request time:', rc.meta.requestTime);
-    
+
     // Your handler logic...
   },
 });
@@ -493,12 +508,9 @@ module.exports = createHandler({
     // Check if endpoint requires validation
     if (rc.props?.requiresValidation) {
       const contentType = rc.headers['content-type'];
-      
+
       if (!contentType || !contentType.includes('application/json')) {
-        throwAppError(
-          'Content-Type must be application/json',
-          ERROR_CODE.INVLDREQ
-        );
+        throwAppError('Content-Type must be application/json', ERROR_CODE.INVLDREQ);
       }
     }
 
@@ -509,6 +521,7 @@ module.exports = createHandler({
 ```
 
 **Register middleware** in `middlewares/index.js`:
+
 ```javascript
 module.exports = {
   // ... existing middleware
@@ -530,27 +543,27 @@ From `@app-core/errors`:
 const { ERROR_CODE } = require('@app-core/errors');
 
 // Authentication & Authorization
-ERROR_CODE.AUTHERR           // Authentication error
-ERROR_CODE.NOAUTHERR         // No authentication provided
-ERROR_CODE.INVLDAUTHTOKEN    // Invalid auth token
-ERROR_CODE.INACTIVEACCT      // Inactive account
-ERROR_CODE.EXPIREDTOKEN      // Expired token
-ERROR_CODE.PERMERR           // Permission error
+ERROR_CODE.AUTHERR; // Authentication error
+ERROR_CODE.NOAUTHERR; // No authentication provided
+ERROR_CODE.INVLDAUTHTOKEN; // Invalid auth token
+ERROR_CODE.INACTIVEACCT; // Inactive account
+ERROR_CODE.EXPIREDTOKEN; // Expired token
+ERROR_CODE.PERMERR; // Permission error
 
 // Request Errors
-ERROR_CODE.INVLDREQ          // Invalid request
-ERROR_CODE.INVLDDATA         // Invalid data
-ERROR_CODE.VALIDATIONERR     // Validation error
-ERROR_CODE.NOTFOUND          // Not found
+ERROR_CODE.INVLDREQ; // Invalid request
+ERROR_CODE.INVLDDATA; // Invalid data
+ERROR_CODE.VALIDATIONERR; // Validation error
+ERROR_CODE.NOTFOUND; // Not found
 
 // Business Errors
-ERROR_CODE.DUPLRCRD          // Duplicate record
-ERROR_CODE.LIMITERR          // Rate limit error
-ERROR_CODE.FEEERR            // Fee error
+ERROR_CODE.DUPLRCRD; // Duplicate record
+ERROR_CODE.LIMITERR; // Rate limit error
+ERROR_CODE.FEEERR; // Fee error
 
 // System Errors
-ERROR_CODE.APPERR            // Application error
-ERROR_CODE.HTTPREQERR        // HTTP request error
+ERROR_CODE.APPERR; // Application error
+ERROR_CODE.HTTPREQERR; // HTTP request error
 ```
 
 ### Throwing Errors
@@ -588,6 +601,7 @@ The framework automatically formats errors:
 ### Local Testing
 
 **1. Start your server:**
+
 ```bash
 npm run dev
 ```
@@ -595,6 +609,7 @@ npm run dev
 > 💡 **For complete setup instructions, see the [Getting Started](./documentation.md#getting-started) section in documentation.md**
 
 **2. Test with curl:**
+
 ```bash
 curl -X POST http://localhost:3000/payment-instructions \
   -H "Content-Type: application/json" \
@@ -632,12 +647,14 @@ appLogger.errorX({ error: err }, 'critical-error-key');
 ### Debugging Tips
 
 **1. Log your parsing steps:**
+
 ```javascript
 appLogger.info({ instruction: instruction }, 'parsing-start');
 appLogger.info({ parsed: parsedData }, 'parsing-complete');
 ```
 
 **2. Validate incrementally:**
+
 ```javascript
 // Check one thing at a time
 if (!isValidAmount) {
@@ -647,6 +664,7 @@ if (!isValidAmount) {
 ```
 
 **3. Test edge cases:**
+
 - Empty strings
 - Extra whitespace
 - Case variations
@@ -660,6 +678,7 @@ if (!isValidAmount) {
 ### 1. Validator Spec Formatting
 
 ❌ **Wrong:**
+
 ```javascript
 const spec = `root{ // No space before brace
   name string
@@ -667,6 +686,7 @@ const spec = `root{ // No space before brace
 ```
 
 ✅ **Correct:**
+
 ```javascript
 const spec = `root { // Space before brace
   name string
@@ -676,6 +696,7 @@ const spec = `root { // Space before brace
 ### 2. Service Function Signature
 
 ❌ **Wrong:**
+
 ```javascript
 async function myService(param1, param2, param3) {
   // Multiple individual parameters
@@ -683,6 +704,7 @@ async function myService(param1, param2, param3) {
 ```
 
 ✅ **Correct:**
+
 ```javascript
 async function myService(serviceData, options = {}) {
   // Single object parameter + optional options
@@ -692,6 +714,7 @@ async function myService(serviceData, options = {}) {
 ### 3. Multiple Return Statements
 
 ❌ **Wrong:**
+
 ```javascript
 async function myService(serviceData, options = {}) {
   if (condition) {
@@ -702,16 +725,17 @@ async function myService(serviceData, options = {}) {
 ```
 
 ✅ **Correct:**
+
 ```javascript
 async function myService(serviceData, options = {}) {
   let response;
-  
+
   if (condition) {
     response = result1;
   } else {
     response = result2;
   }
-  
+
   return response; // Single return
 }
 ```
@@ -719,11 +743,13 @@ async function myService(serviceData, options = {}) {
 ### 4. Error Handling
 
 ❌ **Wrong:**
+
 ```javascript
 throw new Error('Account not found'); // Plain Error
 ```
 
 ✅ **Correct:**
+
 ```javascript
 const { throwAppError, ERROR_CODE } = require('@app-core/errors');
 const Messages = require('@app/messages/payment');
@@ -734,11 +760,13 @@ throwAppError(Messages.ACCOUNT_NOT_FOUND, ERROR_CODE.NOTFOUND);
 ### 5. Logging
 
 ❌ **Wrong:**
+
 ```javascript
 console.log('Processing payment'); // Don't use console.log
 ```
 
 ✅ **Correct:**
+
 ```javascript
 const { appLogger } = require('@app-core/logger');
 appLogger.info({ action: 'processing' }, 'payment-processing');
@@ -747,22 +775,24 @@ appLogger.info({ action: 'processing' }, 'payment-processing');
 ### 6. Validation Before Logic
 
 ❌ **Wrong:**
+
 ```javascript
 async function myService(serviceData, options = {}) {
   // Business logic first
   const result = processData(serviceData);
-  
+
   // Validation later
   const data = validator.validate(serviceData, parsedSpec);
 }
 ```
 
 ✅ **Correct:**
+
 ```javascript
 async function myService(serviceData, options = {}) {
   // Validation FIRST
   const data = validator.validate(serviceData, parsedSpec);
-  
+
   // Then business logic
   const result = processData(data);
 }
@@ -771,12 +801,14 @@ async function myService(serviceData, options = {}) {
 ### 7. Path Aliases
 
 ❌ **Wrong:**
+
 ```javascript
 const validator = require('../../core/validator');
 const logger = require('../../../core/logger');
 ```
 
 ✅ **Correct:**
+
 ```javascript
 const validator = require('@app-core/validator');
 const { appLogger } = require('@app-core/logger');
@@ -817,9 +849,9 @@ const parsedSpec = validator.parse(spec);
 async function myService(serviceData, options = {}) {
   let response;
   const data = validator.validate(serviceData, parsedSpec);
-  
+
   // Your logic here
-  
+
   return response;
 }
 
@@ -839,7 +871,7 @@ module.exports = createHandler({
   async handler(rc, helpers) {
     const payload = rc.body;
     const response = await myService(payload);
-    
+
     return {
       status: helpers.http_statuses.HTTP_200_OK,
       data: response,
