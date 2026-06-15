@@ -1,14 +1,9 @@
+/* eslint-disable import/no-unresolved, node/no-missing-require, import/extensions */
 const jsdocGenerator = require('./jsdoc-generator');
 const speclGenerator = require('./specl-generator');
 
 function serviceTemplateGen(data) {
-  const {
-    jsdocString,
-    speclString,
-    serviceName,
-    speclVariable,
-    jsdocTypeReference,
-  } = data;
+  const { jsdocString, speclString, serviceName, speclVariable, jsdocTypeReference } = data;
   return `const validator = require('@app-core/validator');
 
 ${jsdocString}
