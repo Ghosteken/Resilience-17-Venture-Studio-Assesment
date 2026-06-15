@@ -115,11 +115,10 @@ async function create(serviceData) {
   const newCard = await creatorCardRepository.create(cardData);
 
   // Transform _id to id for response
-  const responseData = {
-    ...newCard,
-    id: newCard._id,
-  };
+  const responseData = newCard.toObject ? newCard.toObject() : { ...newCard };
+  responseData.id = responseData._id;
   delete responseData._id;
+  delete responseData.__v;
 
   return responseData;
 }

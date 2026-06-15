@@ -30,11 +30,10 @@ async function get(slug, accessCode) {
   }
 
   // 5. Success
-  const responseData = {
-    ...card,
-    id: card._id,
-  };
+  const responseData = card.toObject ? card.toObject() : { ...card };
+  responseData.id = responseData._id;
   delete responseData._id;
+  delete responseData.__v;
   delete responseData.access_code;
 
   return responseData;

@@ -31,13 +31,13 @@ async function deleteCard(slug, serviceData) {
   });
 
   // Transform _id to id for response and include updated timestamps
-  const responseData = {
-    ...card,
-    id: card._id,
-    deleted: now,
-    updated: now,
-  };
+  const responseData = card.toObject ? card.toObject() : { ...card };
+  responseData.id = responseData._id;
+  responseData.deleted = now;
+  responseData.updated = now;
+
   delete responseData._id;
+  delete responseData.__v;
 
   return responseData;
 }

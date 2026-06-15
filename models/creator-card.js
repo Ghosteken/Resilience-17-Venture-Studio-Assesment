@@ -46,6 +46,7 @@ const schemaConfig = {
   creator_reference: { type: SchemaTypes.String, required: true, index: true },
   links: [
     {
+      _id: false,
       title: { type: SchemaTypes.String },
       url: { type: SchemaTypes.String },
     },
@@ -54,6 +55,7 @@ const schemaConfig = {
     currency: { type: SchemaTypes.String, enum: ['NGN', 'USD', 'GBP', 'GHS'] },
     rates: [
       {
+        _id: false,
         name: { type: SchemaTypes.String },
         description: { type: SchemaTypes.String },
         amount: { type: SchemaTypes.Number },
