@@ -1,15 +1,16 @@
-//const { processQualifiers, processPossibleValues } = require('./utils');
+// const { processQualifiers, processPossibleValues } = require('./utils');
+/* eslint-disable camelcase */
 function processQualifiers(qualifiers) {
   let processedQualifiers;
   if (qualifiers) {
     processedQualifiers = {};
     const qualifierTokens = qualifiers.split('|');
-    qualifierTokens.forEach(qt => {
+    qualifierTokens.forEach((qt) => {
       const [qt_key, qt_value] = qt.split(':');
       processedQualifiers[qt_key] = {
-        value: qt_value
-      }
-    })
+        value: qt_value,
+      };
+    });
   }
   return processedQualifiers;
 }
@@ -24,5 +25,5 @@ function processPossibleValues(values = '') {
 
 module.exports = {
   processQualifiers,
-  processPossibleValues
-}
+  processPossibleValues,
+};
